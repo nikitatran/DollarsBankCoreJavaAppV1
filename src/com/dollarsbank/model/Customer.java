@@ -1,27 +1,41 @@
 package com.dollarsbank.model;
 
 public class Customer {
-	private int customerId = -1;
+	private static int idCounter = 0;
+	
+	private int customerId;
 	private String firstName;
 	private String lastName;
 	private String phoneNum;
+	private String address;
 	private String city;
 	private String state;
 	private String country;
 	
 	public Customer() {
-		
+		this.customerId = ++idCounter;
 	}
 	
-	public Customer(String firstName, String lastName, String phoneNum, String city, String state,
+	public Customer(String firstName, String lastName, String phoneNum, String address, String city, String state,
 			String country) {
 		super();
+		this.customerId = ++idCounter;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNum = phoneNum;
+		this.address = address;
 		this.city = city;
 		this.state = state;
 		this.country = country;
+	}
+
+	
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public int getCustomerId() {
@@ -83,7 +97,9 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [customerId=" + customerId + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", phoneNum=" + phoneNum + ", city=" + city + ", state=" + state + ", country=" + country + "]";
+				+ ", phoneNum=" + phoneNum + ", address=" + address + ", city=" + city + ", state=" + state
+				+ ", country=" + country + "]";
 	}
+
 	
 }
