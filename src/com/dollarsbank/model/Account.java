@@ -1,7 +1,7 @@
 package com.dollarsbank.model;
 
 public class Account {
-	private int userId;
+	private String userId;
 	private String password;
 	private double amount;
 	private int customerId;
@@ -10,7 +10,7 @@ public class Account {
 		
 	}
 
-	public Account(int userId, String password, double amount, int customerId) {
+	public Account(String userId, String password, double amount, int customerId) {
 		super();
 		this.userId = userId;
 		this.password = password;
@@ -18,11 +18,11 @@ public class Account {
 		this.customerId = customerId;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

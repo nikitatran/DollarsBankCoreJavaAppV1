@@ -23,7 +23,6 @@ public class DollarsBankApplication {
 		}
 		else System.out.println("customer creation failed :(");
 		*/
-		
 		switch(control.initialOption()){
 		case 1: { 
 			control.createNewAccount();

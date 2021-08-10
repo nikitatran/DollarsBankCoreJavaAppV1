@@ -2,6 +2,8 @@ package com.dollarsbank.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.dollarsbank.connection.ConnectionManager;
 import com.dollarsbank.model.Customer;
@@ -11,6 +13,7 @@ public class CustomerDao {
 	
 	private static final String CREATE_CUSTOMER = "INSERT INTO customer"
 			+ "(firstname, lastname, phonenum, city, state, country) VALUES(?, ?, ?, ?, ?, ?)";
+
 	
 	public boolean createCustomer(Customer cust) {
 		try (PreparedStatement pstmt = conn.prepareStatement(CREATE_CUSTOMER)) {
@@ -26,4 +29,7 @@ public class CustomerDao {
 		}
 		return false;
 	}
+	
+
+	
 }
