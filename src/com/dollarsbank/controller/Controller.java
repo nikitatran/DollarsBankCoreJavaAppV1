@@ -14,13 +14,11 @@ import com.dollarsbank.model.Transaction;
 import com.dollarsbank.utility.ColorsUtil;
 
 enum AccountType {
-	CHECKING,
-	SAVINGS
+	CHECKING, SAVINGS
 }
 
 enum TransactionType {
-	DEPOSIT,
-	WITHDRAWAL
+	DEPOSIT, WITHDRAWAL
 }
 
 public class Controller {
@@ -85,8 +83,8 @@ public class Controller {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-		String initDepositTransMsg = "Initial Deposit in Account [" + newAcc.getUserId() + "].\n" + "Balance (Checking) - "
-				+ amount + ", Balance (savings) - 0.0 as on " + formattedTimestamp;
+		String initDepositTransMsg = "Initial Deposit in Account [" + newAcc.getUserId() + "].\n"
+				+ "Balance (Checking) - " + amount + ", Balance (savings) - 0.0 as on " + formattedTimestamp;
 
 		Transaction newTransaction = new Transaction(newAcc.getUserId(), newCust.getCustomerId(), timestamp,
 				initDepositTransMsg);
@@ -98,7 +96,6 @@ public class Controller {
 
 		return false;
 	}
-	
 
 	public Account login() {
 		System.out.println("\nEnter Login Details\n");
@@ -129,12 +126,11 @@ public class Controller {
 
 				acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
 				acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
-				
+
 				System.out.println("\nWELCOME Customer!!!\n" + "1. Deposit Amount\n" + "2. Withdraw Amount\n"
 						+ "3. Funds Transfer\n" + "4. View 5 Recent Transactions\n"
-						+ "5. Display Customer Information\n" + "6. Sign Out\n\n"
-						+ "CHECKING: $" + acc.getCheckingAmount()
-						+ "\nSAVINGS: $" + acc.getSavingsAmount()
+						+ "5. Display Customer Information\n" + "6. Sign Out\n\n" + "CHECKING: $"
+						+ acc.getCheckingAmount() + "\nSAVINGS: $" + acc.getSavingsAmount()
 						+ "\n\nEnter choice (1, 2, 3, 4, 5, or 6):");
 
 				int selectedOption = 0;
@@ -199,14 +195,13 @@ public class Controller {
 	private void transferFundsPrompt(Account acc) {
 		boolean loop = true;
 		while (loop) {
-			
+
 			acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
 			acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
-				
+
 			System.out.println("\nTransfer Funds\n\n" + "What would you like to do?\n" + "1. Checking to Savings\n"
-					+ "2. Savings to Checking\n" + "3. Go back\n\n" 
-					+ "Your checking account currently has $" + acc.getCheckingAmount()
-					+ "\nYour savings account currently has $" + acc.getSavingsAmount()
+					+ "2. Savings to Checking\n" + "3. Go back\n\n" + "Your checking account currently has $"
+					+ acc.getCheckingAmount() + "\nYour savings account currently has $" + acc.getSavingsAmount()
 					+ "\n\nEnter option (1, 2, or 3):");
 
 			int selectedOption = 0;
@@ -222,7 +217,7 @@ public class Controller {
 
 			if (scan.hasNextLine())
 				scan.nextLine();
-			
+
 			switch (selectedOption) {
 			case 1:
 				transferFunds(acc, AccountType.SAVINGS);
@@ -239,25 +234,24 @@ public class Controller {
 			}
 		}
 	}
-	
+
 	private void depositWithdrawalPrompt(Account acc, TransactionType type) {
 		String typeStr = "";
-		
-		if(type == TransactionType.DEPOSIT) {
-			typeStr = "Deposit";
+
+		if (type == TransactionType.DEPOSIT) {
+			typeStr = "Deposit to ";
+		} else if (type == TransactionType.WITHDRAWAL) {
+			typeStr = "Withdraw from ";
 		}
-		else if (type == TransactionType.WITHDRAWAL) {
-			typeStr = "Withdraw";
-		}
-		
+
 		boolean loop = true;
 		while (loop) {
-			
+
 			acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
 			acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
-				
-			System.out.println("\n" + typeStr +" Amount\n\n" + "What would you like to do?\n" + "1. " + typeStr + " to Checking\n"
-					+ "2. " + typeStr + " to Savings\n" + "3. Go back\n\n" 
+
+			System.out.println("\n" + typeStr + " Amount\n\n" + "What would you like to do?\n" + "1. " + typeStr
+					+ "Checking\n" + "2. " + typeStr + "Savings\n" + "3. Go back\n\n"
 					+ "Your checking account currently has $" + acc.getCheckingAmount()
 					+ "\nYour savings account currently has $" + acc.getSavingsAmount()
 					+ "\n\nEnter option (1, 2, or 3):");
@@ -275,13 +269,16 @@ public class Controller {
 
 			if (scan.hasNextLine())
 				scan.nextLine();
-			
+
 			switch (selectedOption) {
 			case 1:
-				
+				// deposit to checking
+				// withdraw to checking
+				depositWithdrawChecking(acc, type);
 				break;
 			case 2:
-				
+				// deposit to savings
+				// withdraw to savings
 				break;
 			case 3:
 				loop = false;
@@ -292,67 +289,119 @@ public class Controller {
 			}
 		}
 	}
-	
-	
-	
-	private void transferFunds(Account acc, AccountType type) {
+
+	private void depositWithdrawChecking(Account acc, TransactionType type) {
 		String transferType = "";
-		
-		if(type == AccountType.SAVINGS) {
-			transferType = "Checking to Savings";
+
+		if (type == TransactionType.DEPOSIT) {
+			transferType = "Deposit";
+		} else if (type == TransactionType.WITHDRAWAL) {
+			transferType = "Withdraw";
 		}
-		else if (type == AccountType.CHECKING) {
-			transferType = "Savings to Checking";
-		}
-		
-		System.out.println("\nTransferring " + transferType
-				+ "\nHow much to do you want to transfer?\n"
-				+ "Your checking account currently has $" + acc.getCheckingAmount() + "\n"
-				+ "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
-		
+
+		System.out.println("\n" + transferType + " amount" + "\nHow much to do you want to "
+				+ transferType.toLowerCase() + "?\n" + "Your checking account currently has $" + acc.getCheckingAmount()
+				+ "\n" + "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
+
 		boolean invalid = true;
 		double amount = 0.0;
-		
+
 		while (invalid) {
 			System.out.print("> $");
 			if (!scan.hasNextDouble()) {
 				System.out.println(ColorsUtil.ANSI_RED + "Invalid input. Please try again." + ColorsUtil.ANSI_RESET);
-			} 
-			else {
+			} else {
 				amount = scan.nextDouble();
 				if (amount < 0.0)
 					System.out.println(ColorsUtil.ANSI_RED + "Please enter $0 or more." + ColorsUtil.ANSI_RESET);
-				else if(amount > acc.getCheckingAmount())
-					System.out.println(ColorsUtil.ANSI_RED + "You cannot enter more than you have in your checking account." + ColorsUtil.ANSI_RESET);
 				else
 					invalid = false;
 			}
-			
+
 			if (scan.hasNextLine())
 				scan.nextLine();
 		}
-		
+
+		double newCheckingAmt = 0.0;
+
+		// update transaction table
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
+		String msg = "";
+		if (type == TransactionType.DEPOSIT) {
+			newCheckingAmt = acc.getCheckingAmount() + amount;
+			msg = "Deposited " + amount + " to Checking in Account [" + acc.getUserId() + "].\n"
+					+ "Balance (Checking) - " + newCheckingAmt + ", Balance (savings) - " + acc.getSavingsAmount() + " as on "
+					+ formattedTimestamp;
+		} else if (type == TransactionType.WITHDRAWAL) {
+			newCheckingAmt = acc.getCheckingAmount() - amount;
+			msg = "Withdrew " + amount + " from Checking in Account [" + acc.getUserId() + "].\n"
+					+ "Balance (Checking) - " + newCheckingAmt + ", Balance (savings) - " + acc.getSavingsAmount() + " as on "
+					+ formattedTimestamp;
+		}
+
+
+		Transaction newTransaction = new Transaction(acc.getUserId(), acc.getCustomerId(), timestamp, msg);
+
+		accountDao.updateChecking(newCheckingAmt, acc.getCustomerId());
+		transactionDao.createTransaction(newTransaction);
+	}
+
+	private void transferFunds(Account acc, AccountType type) {
+		String transferType = "";
+
+		if (type == AccountType.SAVINGS) {
+			transferType = "Checking to Savings";
+		} else if (type == AccountType.CHECKING) {
+			transferType = "Savings to Checking";
+		}
+
+		System.out.println("\nTransferring " + transferType + "\nHow much to do you want to transfer?\n"
+				+ "Your checking account currently has $" + acc.getCheckingAmount() + "\n"
+				+ "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
+
+		boolean invalid = true;
+		double amount = 0.0;
+
+		while (invalid) {
+			System.out.print("> $");
+			if (!scan.hasNextDouble()) {
+				System.out.println(ColorsUtil.ANSI_RED + "Invalid input. Please try again." + ColorsUtil.ANSI_RESET);
+			} else {
+				amount = scan.nextDouble();
+				if (amount < 0.0)
+					System.out.println(ColorsUtil.ANSI_RED + "Please enter $0 or more." + ColorsUtil.ANSI_RESET);
+				else if (amount > acc.getCheckingAmount())
+					System.out.println(ColorsUtil.ANSI_RED
+							+ "You cannot enter more than you have in your checking account." + ColorsUtil.ANSI_RESET);
+				else
+					invalid = false;
+			}
+
+			if (scan.hasNextLine())
+				scan.nextLine();
+		}
+
 		double newSavingsAmt = 0.0;
 		double newCheckingAmt = 0.0;
-		
+
 		if (type == AccountType.SAVINGS) {
 			newSavingsAmt = acc.getSavingsAmount() + amount;
 			newCheckingAmt = acc.getCheckingAmount() - amount;
-		}
-		else if (type == AccountType.CHECKING) {
+		} else if (type == AccountType.CHECKING) {
 			newSavingsAmt = acc.getSavingsAmount() - amount;
 			newCheckingAmt = acc.getCheckingAmount() + amount;
 		}
-		
-		//update transaction table	
+
+		// update transaction table
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-		String msg = "Transfered " + amount + " from " + transferType + " in Account [" + acc.getUserId() + "].\n" + "Balance (Checking) - "
-				+ newCheckingAmt + ", Balance (savings) - " + newSavingsAmt + " as on " + formattedTimestamp;
+		String msg = "Transfered " + amount + " from " + transferType + " in Account [" + acc.getUserId() + "].\n"
+				+ "Balance (Checking) - " + newCheckingAmt + ", Balance (savings) - " + newSavingsAmt + " as on "
+				+ formattedTimestamp;
 
-		Transaction newTransaction = new Transaction(acc.getUserId(), acc.getCustomerId(), timestamp,
-				msg);
-		
+		Transaction newTransaction = new Transaction(acc.getUserId(), acc.getCustomerId(), timestamp, msg);
+
 		accountDao.updateSavings(newSavingsAmt, acc.getCustomerId());
 		accountDao.updateChecking(newCheckingAmt, acc.getCustomerId());
 		transactionDao.createTransaction(newTransaction);
