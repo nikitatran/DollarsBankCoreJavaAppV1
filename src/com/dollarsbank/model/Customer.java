@@ -100,10 +100,11 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [customerId=" + customerId + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", phoneNum=" + phoneNum + ", address=" + address + ", city=" + city + ", state=" + state
-				+ ", country=" + country + "]";
+		return "Name = " + firstName + " " + lastName 
+				+ "\nPhone number = " + phoneNum
+				+ "\nAddress = " + address 
+				+ "\nCity = " + city 
+				+ "\nState = " + state
+				+ "\nCountry= " + country;
 	}
-
-	
 }

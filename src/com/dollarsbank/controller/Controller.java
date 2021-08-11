@@ -37,13 +37,12 @@ public class Controller {
 		} else {
 			System.out.println("error: Non-integer input");
 		}
-
+		if (scan.hasNextLine())
+			scan.nextLine();
 		return selectedOption;
 	}
 
 	public boolean createNewAccount() {
-		if (scan.hasNextLine())
-			scan.nextLine();
 
 		System.out.println("\nEnter Details For New Account\n");
 
@@ -52,6 +51,7 @@ public class Controller {
 		String lastName = fullName[1];
 
 		String phoneNum = validatePhoneNum();
+		System.out.println("phone num: " + phoneNum);
 
 		System.out.println("\nCustomer address:\n" + "Example: 123 Longs Pond Rd");
 		String address = scan.nextLine();
@@ -70,24 +70,100 @@ public class Controller {
 		double amount = validateInitAmt();
 
 		Customer newCust = new Customer(firstName, lastName, phoneNum, address, city, state, country);
+		System.out.println("asdhfjkads: " + newCust.getPhoneNum());
 		Account newAcc = new Account(userId, password, amount, 0.0, newCust.getCustomerId());
-		
+
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-		String initDepositTransMsg = 
-				"Initial Deposit in Account [" + newAcc.getUserId() + "].\n"
-						+ "Balance - " + amount + " as on " + formattedTimestamp;
+		String initDepositTransMsg = "Initial Deposit in Account [" + newAcc.getUserId() + "].\n" + "Balance - "
+				+ amount + " as on " + formattedTimestamp;
 
-		Transaction newTransaction = new Transaction(newAcc.getUserId(), newCust.getCustomerId(),
-				timestamp, initDepositTransMsg);
+		Transaction newTransaction = new Transaction(newAcc.getUserId(), newCust.getCustomerId(), timestamp,
+				initDepositTransMsg);
 
 		// add to database
 		customerDao.createCustomer(newCust);
 		accountDao.createAccount(newAcc);
 		transactionDao.createTransaction(newTransaction);
-		
 
 		return false;
+	}
+
+	public Account login() {
+		System.out.println("\nEnter Login Details\n");
+		System.out.println("User id: ");
+
+		String userId = scan.nextLine();
+
+		System.out.println("Password: ");
+
+		String password = scan.nextLine();
+
+		Account acc = accountDao.getAccountByUserId(userId);
+
+		if (acc == null || !acc.getPassword().equals(password)) {
+			System.out.println(ColorsUtil.ANSI_RED + "Invalid Credentials. Please try again." + ColorsUtil.ANSI_RESET);
+			return null;
+		} else {
+			System.out.println(ColorsUtil.ANSI_GREEN + "Successfully logged in." + ColorsUtil.ANSI_RESET);
+		}
+
+		return acc;
+	}
+
+	public void onLoginSuccess(Account acc) {
+		if (acc != null) {
+			boolean loggedIn = true;
+			while (loggedIn) {
+
+				System.out.println("\nWELCOME Customer!!!\n" + "1. Deposit Amount\n" + "2. Withdraw Amount\n"
+						+ "3. Funds Transfer\n" + "4. View 5 Recent Transactions\n"
+						+ "5. Display Customer Information\n" + "6. Sign Out\n\n"
+						+ "Enter choice (1, 2, 3, 4, 5, or 6):");
+
+				int selectedOption = 0;
+
+				if (scan.hasNextInt()) {
+					selectedOption = scan.nextInt();
+					if (selectedOption < 1 || selectedOption > 6) {
+						System.out.println("Please enter a value between 1-6.");
+					}
+				} else {
+					System.out.println("Error: Non-integer input");
+				}
+
+				if (scan.hasNextLine())
+					scan.nextLine();
+
+				switch (selectedOption) {
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					displayCustomerInfo(acc);
+					break;
+				case 6:
+					loggedIn = false;
+					System.out.println("Logging out...");
+					break;
+				default:
+					System.out.println("No valid option was selected.");
+					break;
+				}
+			}
+		}
+	}
+
+	private void displayCustomerInfo(Account acc) {
+		System.out.println("\nYour Information:");
+		
+		Customer cust = customerDao.getCustomerByCustomerId(acc.getCustomerId());
+		System.out.println(cust.toString());
 	}
 
 	private String[] validateName() {
@@ -151,11 +227,11 @@ public class Controller {
 			if (!state.equals("N/A") && (state.length() > 2 || state.length() < 2)) {
 				System.out.println(
 						ColorsUtil.ANSI_RED + "Please enter a 2-letter state code. Try again." + ColorsUtil.ANSI_RESET);
-			} 
-			else if (!state.matches("[a-zA-Z]+")) {
-				System.out.println(ColorsUtil.ANSI_RED + "Please enter letters only. Try again." + ColorsUtil.ANSI_RESET);
-			}
-			else invalid = false;
+			} else if (!state.matches("[a-zA-Z]+")) {
+				System.out
+						.println(ColorsUtil.ANSI_RED + "Please enter letters only. Try again." + ColorsUtil.ANSI_RESET);
+			} else
+				invalid = false;
 		}
 
 		return state.toUpperCase();

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.dollarsbank.controller.Controller;
 import com.dollarsbank.dao.CustomerDao;
+import com.dollarsbank.model.Account;
 import com.dollarsbank.model.Customer;
 import com.dollarsbank.utility.ColorsUtil;
 
@@ -32,7 +33,7 @@ public class DollarsBankApplication {
 				break;
 			}
 			case 2:
-
+				control.onLoginSuccess(control.login());
 				break;
 			case 3:
 				System.out.println("Exiting system.");
