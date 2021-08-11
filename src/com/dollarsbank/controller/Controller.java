@@ -18,6 +18,11 @@ enum AccountType {
 	SAVINGS
 }
 
+enum TransactionType {
+	DEPOSIT,
+	WITHDRAWAL
+}
+
 public class Controller {
 	public static final Scanner scan = new Scanner(System.in);
 	private static final AccountDao accountDao = new AccountDao();
@@ -148,8 +153,10 @@ public class Controller {
 
 				switch (selectedOption) {
 				case 1:
+					depositWithdrawalPrompt(acc, TransactionType.DEPOSIT);
 					break;
 				case 2:
+					depositWithdrawalPrompt(acc, TransactionType.WITHDRAWAL);
 					break;
 				case 3:
 					transferFundsPrompt(acc);
@@ -232,6 +239,61 @@ public class Controller {
 			}
 		}
 	}
+	
+	private void depositWithdrawalPrompt(Account acc, TransactionType type) {
+		String typeStr = "";
+		
+		if(type == TransactionType.DEPOSIT) {
+			typeStr = "Deposit";
+		}
+		else if (type == TransactionType.WITHDRAWAL) {
+			typeStr = "Withdraw";
+		}
+		
+		boolean loop = true;
+		while (loop) {
+			
+			acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
+			acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
+				
+			System.out.println("\n" + typeStr +" Amount\n\n" + "What would you like to do?\n" + "1. " + typeStr + " to Checking\n"
+					+ "2. " + typeStr + " to Savings\n" + "3. Go back\n\n" 
+					+ "Your checking account currently has $" + acc.getCheckingAmount()
+					+ "\nYour savings account currently has $" + acc.getSavingsAmount()
+					+ "\n\nEnter option (1, 2, or 3):");
+
+			int selectedOption = 0;
+
+			if (scan.hasNextInt()) {
+				selectedOption = scan.nextInt();
+				if (selectedOption < 1 || selectedOption > 3) {
+					System.out.println("Please enter a value between 1-3.");
+				}
+			} else {
+				System.out.println("Error: Non-integer input");
+			}
+
+			if (scan.hasNextLine())
+				scan.nextLine();
+			
+			switch (selectedOption) {
+			case 1:
+				
+				break;
+			case 2:
+				
+				break;
+			case 3:
+				loop = false;
+				break;
+			default:
+				System.out.println("No valid option was selected.");
+				break;
+			}
+		}
+	}
+	
+	
 	
 	private void transferFunds(Account acc, AccountType type) {
 		String transferType = "";
