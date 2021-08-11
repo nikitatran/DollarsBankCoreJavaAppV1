@@ -3,10 +3,7 @@ package com.dollarsbank.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.dollarsbank.connection.ConnectionManager;
-import com.dollarsbank.model.Account;
 import com.dollarsbank.model.Customer;
 import com.dollarsbank.utility.ColorsUtil;
 

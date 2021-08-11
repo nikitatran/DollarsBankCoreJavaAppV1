@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dollarsbank.connection.ConnectionManager;
-import com.dollarsbank.model.Customer;
 import com.dollarsbank.model.Transaction;
 import com.dollarsbank.utility.ColorsUtil;
 
