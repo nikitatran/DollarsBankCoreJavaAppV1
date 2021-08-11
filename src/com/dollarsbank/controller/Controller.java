@@ -79,10 +79,8 @@ public class Controller {
 		System.out.println("asdhfjkads: " + newCust.getPhoneNum());
 		Account newAcc = new Account(userId, password, amount, 0.0, newCust.getCustomerId());
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-		String initDepositTransMsg = "Initial Deposit in Account [" + newAcc.getUserId() + "].\n"
-				+ "Balance (Checking) - " + amount + ", Balance (savings) - 0.0 as on " + formattedTimestamp;
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());		
+		String initDepositTransMsg = ConsolePrinterUtil.transactionMsg("Initial deposit of", amount, "to", "checking", newAcc.getUserId(), amount, 0.0, timestamp);
 
 		Transaction newTransaction = new Transaction(newAcc.getUserId(), newCust.getCustomerId(), timestamp,
 				initDepositTransMsg);
@@ -94,6 +92,7 @@ public class Controller {
 
 		return false;
 	}
+	
 
 	public Account login() {
 		System.out.println("\n" + ConsolePrinterUtil.boxedText("Enter Login Details"));
@@ -312,7 +311,6 @@ public class Controller {
 
 		// update transaction table
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
 		String msg = "";
 		if (type == TransactionType.DEPOSIT) {
 			newCheckingAmt = acc.getCheckingAmount() + amount;
@@ -585,7 +583,7 @@ public class Controller {
 	}
 
 	private double validateInitAmt() {
-		System.out.println("\nInitial Deposit Amount:\n");
+		System.out.println("\nInitial Deposit Amount:");
 
 		boolean invalid = true;
 		double amount = 0.0;

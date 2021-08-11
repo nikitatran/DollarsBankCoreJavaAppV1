@@ -43,7 +43,7 @@ public class ConsolePrinterUtil {
 		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
 		
 		String msg = beginning + " $" + amount + " " + toFrom + " " + accountType + " in Account [" + accountName + "].\n"
-				+ "Balance (Checking) - " + checkingAmt + ", Balance (Savings) - " + savingsAmt + " as on " + formattedTimestamp;
+				+ "Balance (Checking) - $" + checkingAmt + ", Balance (Savings) - $" + savingsAmt + " as of " + formattedTimestamp;
 		
 		return msg;
 	}
