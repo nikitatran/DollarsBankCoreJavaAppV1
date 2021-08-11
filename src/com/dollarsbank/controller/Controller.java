@@ -1,14 +1,23 @@
 package com.dollarsbank.controller;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import com.dollarsbank.dao.AccountDao;
+import com.dollarsbank.dao.CustomerDao;
+import com.dollarsbank.dao.TransactionDao;
+import com.dollarsbank.model.Account;
 import com.dollarsbank.model.Customer;
+import com.dollarsbank.model.Transaction;
 import com.dollarsbank.utility.ColorsUtil;
 
 public class Controller {
 	public static final Scanner scan = new Scanner(System.in);
 	private static final AccountDao accountDao = new AccountDao();
+	private static final CustomerDao customerDao = new CustomerDao();
+	private static final TransactionDao transactionDao = new TransactionDao();
 
 	public Controller() {
 
@@ -37,7 +46,7 @@ public class Controller {
 			scan.nextLine();
 
 		System.out.println("\nEnter Details For New Account\n");
-/*
+
 		String[] fullName = validateName();
 		String firstName = fullName[0];
 		String lastName = fullName[1];
@@ -58,8 +67,25 @@ public class Controller {
 
 		String password = validatePassword();
 
-*/
 		double amount = validateInitAmt();
+
+		Customer newCust = new Customer(firstName, lastName, phoneNum, address, city, state, country);
+		Account newAcc = new Account(userId, password, amount, 0.0, newCust.getCustomerId());
+		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
+		String initDepositTransMsg = 
+				"Initial Deposit in Account [" + newAcc.getUserId() + "].\n"
+						+ "Balance - " + amount + " as on " + formattedTimestamp;
+
+		Transaction newTransaction = new Transaction(newAcc.getUserId(), newCust.getCustomerId(),
+				timestamp, initDepositTransMsg);
+
+		// add to database
+		customerDao.createCustomer(newCust);
+		accountDao.createAccount(newAcc);
+		transactionDao.createTransaction(newTransaction);
+		
 
 		return false;
 	}
@@ -125,8 +151,11 @@ public class Controller {
 			if (!state.equals("N/A") && (state.length() > 2 || state.length() < 2)) {
 				System.out.println(
 						ColorsUtil.ANSI_RED + "Please enter a 2-letter state code. Try again." + ColorsUtil.ANSI_RESET);
-			} else
-				invalid = false;
+			} 
+			else if (!state.matches("[a-zA-Z]+")) {
+				System.out.println(ColorsUtil.ANSI_RED + "Please enter letters only. Try again." + ColorsUtil.ANSI_RESET);
+			}
+			else invalid = false;
 		}
 
 		return state.toUpperCase();

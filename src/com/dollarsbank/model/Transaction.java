@@ -1,21 +1,24 @@
 package com.dollarsbank.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Transaction {
+	private static int idCounter = 0;
+	
 	private int transactionId;
-	private int userId;
+	private String userId;
 	private int customerId;
-	private Date timestamp;
+	private Timestamp timestamp;
 	private String message;
 	
 	public Transaction() {
 		
 	}
 
-	public Transaction(int transactionId, int userId, int customerId, Date timestamp, String message) {
+	public Transaction(String userId, int customerId, Timestamp timestamp, String message) {
 		super();
-		this.transactionId = transactionId;
+		this.transactionId = ++idCounter;
 		this.userId = userId;
 		this.customerId = customerId;
 		this.timestamp = timestamp;
@@ -30,11 +33,11 @@ public class Transaction {
 		this.transactionId = transactionId;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -46,11 +49,11 @@ public class Transaction {
 		this.customerId = customerId;
 	}
 
-	public Date getTimestamp() {
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
 

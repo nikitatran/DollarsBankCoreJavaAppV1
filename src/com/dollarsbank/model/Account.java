@@ -3,18 +3,20 @@ package com.dollarsbank.model;
 public class Account {
 	private String userId;
 	private String password;
-	private double amount;
+	private double checkingAmount;
+	private double savingsAmount;
 	private int customerId;
 	
 	public Account() {
 		
 	}
 
-	public Account(String userId, String password, double amount, int customerId) {
+	public Account(String userId, String password, double checkingAmount, double savingsAmount, int customerId) {
 		super();
 		this.userId = userId;
 		this.password = password;
-		this.amount = amount;
+		this.checkingAmount = checkingAmount;
+		this.savingsAmount = savingsAmount;
 		this.customerId = customerId;
 	}
 
@@ -34,12 +36,20 @@ public class Account {
 		this.password = password;
 	}
 
-	public double getAmount() {
-		return amount;
+	public double getCheckingAmount() {
+		return checkingAmount;
 	}
 
-	public void setAmount(double amount) {
-		this.amount = amount;
+	public void setCheckingAmount(double checkingAmount) {
+		this.checkingAmount = checkingAmount;
+	}
+
+	public double getSavingsAmount() {
+		return savingsAmount;
+	}
+
+	public void setSavingsAmount(double savingsAmount) {
+		this.savingsAmount = savingsAmount;
 	}
 
 	public int getCustomerId() {
@@ -52,7 +62,8 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account [userId=" + userId + ", password=" + password + ", amount=" + amount + ", customerId="
-				+ customerId + "]";
+		return "Account [userId=" + userId + ", password=" + password + ", checkingAmount=" + checkingAmount
+				+ ", savingsAmount=" + savingsAmount + ", customerId=" + customerId + "]";
 	}
+
 }

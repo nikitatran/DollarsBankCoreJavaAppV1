@@ -1,7 +1,11 @@
 package com.dollarsbank.model;
 
+import com.dollarsbank.dao.CustomerDao;
+
 public class Customer {
-	private static int idCounter = 0;
+	private static CustomerDao custDao = new CustomerDao();
+	private static int idCounter = custDao.getMaxCustomerId();
+	//get top id from database
 	
 	private int customerId;
 	private String firstName;
