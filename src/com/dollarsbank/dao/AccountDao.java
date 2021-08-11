@@ -3,11 +3,8 @@ package com.dollarsbank.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.dollarsbank.connection.ConnectionManager;
 import com.dollarsbank.model.Account;
-import com.dollarsbank.model.Customer;
 import com.dollarsbank.utility.ColorsUtil;
 
 public class AccountDao {
@@ -16,6 +13,10 @@ public class AccountDao {
 	private static final String ACCOUNT_BY_USERID = "SELECT * FROM account WHERE user_id = ?";
 	private static final String CREATE_ACCOUNT = "INSERT INTO account"
 			+ "(user_id, password, checkingamount, savingsamount, customer_id) VALUES(?, ?, ?, ?, ?)";
+	private static final String UPDATE_SAVINGS = "update account set savingsamount = ? where customer_id = ?";
+	private static final String UPDATE_CHECKING = "update account set checkingamount = ? where customer_id = ?";
+	private static final String GET_CHECKING = "select checkingamount from account where customer_id = ?";
+	private static final String GET_SAVINGS = "select savingsamount from account where customer_id = ?";
 	
 	public Account getAccountByUserId(String userId) {
 		Account acc = null;
@@ -57,5 +58,71 @@ public class AccountDao {
 		
 		System.out.println(ColorsUtil.ANSI_RED + "Account creation failed" + ColorsUtil.ANSI_RESET);
 		return false;
+	}
+	
+	public boolean updateSavings(double amt, int id) {
+		try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_SAVINGS)) {
+			pstmt.setDouble(1, amt);
+			pstmt.setInt(2, id);
+			if (pstmt.executeUpdate() > 0) {
+				System.out.println(ColorsUtil.ANSI_GREEN + "Savings amount updated successfully" + ColorsUtil.ANSI_RESET);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(ColorsUtil.ANSI_RED + "Savings amount update failed" + ColorsUtil.ANSI_RESET);
+		return false;
+	}
+	
+	public boolean updateChecking(double amt, int id) {
+		try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_CHECKING)) {
+			pstmt.setDouble(1, amt);
+			pstmt.setInt(2, id);
+			if (pstmt.executeUpdate() > 0) {
+				System.out.println(ColorsUtil.ANSI_GREEN + "Checking amount updated successfully" + ColorsUtil.ANSI_RESET);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(ColorsUtil.ANSI_RED + "Checking amount update failed" + ColorsUtil.ANSI_RESET);
+		return false;
+	}
+	
+	public double getCheckingAmtByCustId(int id) {
+		double amt = 0.0;
+		
+		try (PreparedStatement pstmt = conn.prepareStatement(GET_CHECKING)) {
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				amt = rs.getDouble("checkingamount");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return amt;
+	}
+	
+	public double getSavingsAmtByCustId(int id) {
+		double amt = 0.0;
+		
+		try (PreparedStatement pstmt = conn.prepareStatement(GET_SAVINGS)) {
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				amt = rs.getDouble("savingsamount");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return amt;
 	}
 }
