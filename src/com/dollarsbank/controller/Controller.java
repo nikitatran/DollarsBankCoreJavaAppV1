@@ -1,6 +1,5 @@
 package com.dollarsbank.controller;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -13,6 +12,11 @@ import com.dollarsbank.model.Account;
 import com.dollarsbank.model.Customer;
 import com.dollarsbank.model.Transaction;
 import com.dollarsbank.utility.ColorsUtil;
+
+enum AccountType {
+	CHECKING,
+	SAVINGS
+}
 
 public class Controller {
 	public static final Scanner scan = new Scanner(System.in);
@@ -118,6 +122,9 @@ public class Controller {
 			boolean loggedIn = true;
 			while (loggedIn) {
 
+				acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
+				acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
+				
 				System.out.println("\nWELCOME Customer!!!\n" + "1. Deposit Amount\n" + "2. Withdraw Amount\n"
 						+ "3. Funds Transfer\n" + "4. View 5 Recent Transactions\n"
 						+ "5. Display Customer Information\n" + "6. Sign Out\n\n"
@@ -145,9 +152,7 @@ public class Controller {
 				case 2:
 					break;
 				case 3:
-					transferFunds(acc);
-					acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
-					acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
+					transferFundsPrompt(acc);
 					break;
 				case 4:
 					viewTransactions(acc);
@@ -184,9 +189,13 @@ public class Controller {
 		}
 	}
 
-	private void transferFunds(Account acc) {
+	private void transferFundsPrompt(Account acc) {
 		boolean loop = true;
 		while (loop) {
+			
+			acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
+			acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
+				
 			System.out.println("\nTransfer Funds\n\n" + "What would you like to do?\n" + "1. Checking to Savings\n"
 					+ "2. Savings to Checking\n" + "3. Go back\n\n" 
 					+ "Your checking account currently has $" + acc.getCheckingAmount()
@@ -209,11 +218,10 @@ public class Controller {
 			
 			switch (selectedOption) {
 			case 1:
-				transferCheckingtoSavings(acc);
-				acc.setCheckingAmount(accountDao.getCheckingAmtByCustId(acc.getCustomerId()));
-				acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
+				transferFunds(acc, AccountType.SAVINGS);
 				break;
 			case 2:
+				transferFunds(acc, AccountType.CHECKING);
 				break;
 			case 3:
 				loop = false;
@@ -225,9 +233,18 @@ public class Controller {
 		}
 	}
 	
-	private void transferCheckingtoSavings(Account acc) {
-		System.out.println("\nTransferring Checking to Savings\n"
-				+ "How much to do you want to transfer?\n"
+	private void transferFunds(Account acc, AccountType type) {
+		String transferType = "";
+		
+		if(type == AccountType.SAVINGS) {
+			transferType = "Checking to Savings";
+		}
+		else if (type == AccountType.CHECKING) {
+			transferType = "Savings to Checking";
+		}
+		
+		System.out.println("\nTransferring " + transferType
+				+ "\nHow much to do you want to transfer?\n"
 				+ "Your checking account currently has $" + acc.getCheckingAmount() + "\n"
 				+ "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
 		
@@ -253,13 +270,22 @@ public class Controller {
 				scan.nextLine();
 		}
 		
-		double newSavingsAmt = acc.getSavingsAmount() + amount;
-		double newCheckingAmt = acc.getCheckingAmount() - amount;
+		double newSavingsAmt = 0.0;
+		double newCheckingAmt = 0.0;
+		
+		if (type == AccountType.SAVINGS) {
+			newSavingsAmt = acc.getSavingsAmount() + amount;
+			newCheckingAmt = acc.getCheckingAmount() - amount;
+		}
+		else if (type == AccountType.CHECKING) {
+			newSavingsAmt = acc.getSavingsAmount() - amount;
+			newCheckingAmt = acc.getCheckingAmount() + amount;
+		}
 		
 		//update transaction table	
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-		String msg = "Transfered " + amount + " from Checking to Savings in Account [" + acc.getUserId() + "].\n" + "Balance (Checking) - "
+		String msg = "Transfered " + amount + " from " + transferType + " in Account [" + acc.getUserId() + "].\n" + "Balance (Checking) - "
 				+ newCheckingAmt + ", Balance (savings) - " + newSavingsAmt + " as on " + formattedTimestamp;
 
 		Transaction newTransaction = new Transaction(acc.getUserId(), acc.getCustomerId(), timestamp,
