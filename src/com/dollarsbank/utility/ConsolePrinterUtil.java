@@ -8,6 +8,9 @@ public class ConsolePrinterUtil {
 	public static final String NONINT_INPUT = ColorsUtil.ANSI_RED + "Error: Non-integer input" + ColorsUtil.ANSI_RESET;
 	
 	public static final String EXIT = ColorsUtil.ANSI_GREEN + "Exiting system." + ColorsUtil.ANSI_RESET;
+	public static final String LOGOUT = ColorsUtil.ANSI_GREEN + "Logging out..." + ColorsUtil.ANSI_RESET;
+	public static final String CHECKING_LABEL = "CHECKING: $";
+	public static final String SAVINGS_LABEL = "SAVINGS: $";
 	
 	public static String enterChoice(int optAmt) {
 		String prompt = "Enter Choice (";

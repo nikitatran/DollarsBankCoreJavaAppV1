@@ -76,7 +76,6 @@ public class Controller {
 		double amount = validateInitAmt();
 
 		Customer newCust = new Customer(firstName, lastName, phoneNum, address, city, state, country);
-		System.out.println("asdhfjkads: " + newCust.getPhoneNum());
 		Account newAcc = new Account(userId, password, amount, 0.0, newCust.getCustomerId());
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());		
@@ -126,8 +125,8 @@ public class Controller {
 
 				System.out.println("\n" + ConsolePrinterUtil.boxedText("WELCOME Customer!!!") + "\n1. Deposit Amount\n" + "2. Withdraw Amount\n"
 						+ "3. Funds Transfer\n" + "4. View 5 Recent Transactions\n"
-						+ "5. Display Customer Information\n" + "6. Sign Out\n\n" + "CHECKING: $"
-						+ acc.getCheckingAmount() + "\nSAVINGS: $" + acc.getSavingsAmount()
+						+ "5. Display Customer Information\n" + "6. Sign Out\n\n" + ConsolePrinterUtil.CHECKING_LABEL
+						+ acc.getCheckingAmount() + "\n" + ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount()
 						+ "\n\n" + ConsolePrinterUtil.enterChoice(6));
 
 				int selectedOption = 0;
@@ -159,7 +158,7 @@ public class Controller {
 					break;
 				case 6:
 					loggedIn = false;
-					System.out.println("Logging out...");
+					System.out.println(ConsolePrinterUtil.LOGOUT);
 					break;
 				default:
 					System.out.println(ConsolePrinterUtil.invalidChoice(6));
@@ -194,8 +193,8 @@ public class Controller {
 			acc.setSavingsAmount(accountDao.getSavingsAmtByCustId(acc.getCustomerId()));
 
 			System.out.println("\n" + ConsolePrinterUtil.boxedText("Funds Transfer") + "\n1. Checking to Savings\n"
-					+ "2. Savings to Checking\n" + "3. Go back\n\n" + "Your checking account currently has $"
-					+ acc.getCheckingAmount() + "\nYour savings account currently has $" + acc.getSavingsAmount()
+					+ "2. Savings to Checking\n" + "3. Go back\n\n" + ConsolePrinterUtil.CHECKING_LABEL
+					+ acc.getCheckingAmount() + "\n" + ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount()
 					+ "\n\n" + ConsolePrinterUtil.enterChoice(3));
 
 			int selectedOption = 0;
@@ -243,8 +242,8 @@ public class Controller {
 
 			System.out.println("\n" + ConsolePrinterUtil.boxedText(typeStr + "Account") + "\n" + "1. " + typeStr
 					+ "Checking\n" + "2. " + typeStr + "Savings\n" + "3. Go back\n\n"
-					+ "Your checking account currently has $" + acc.getCheckingAmount()
-					+ "\nYour savings account currently has $" + acc.getSavingsAmount()
+					+ ConsolePrinterUtil.CHECKING_LABEL + acc.getCheckingAmount()
+					+ "\n" + ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount()
 					+ "\n\n" + ConsolePrinterUtil.enterChoice(3));
 
 			int selectedOption = 0;
@@ -285,8 +284,8 @@ public class Controller {
 		}
 
 		System.out.println("\n" + ConsolePrinterUtil.boxedText(transferType + " Amount") + "\nHow much to do you want to "
-				+ transferType.toLowerCase() + "?\n" + "Your checking account currently has $" + acc.getCheckingAmount()
-				+ "\n" + "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
+				+ transferType.toLowerCase() + "?\n" + ConsolePrinterUtil.CHECKING_LABEL + acc.getCheckingAmount()
+				+ "\n" + ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount() + "\n");
 
 		boolean invalid = true;
 		double amount = 0.0;
@@ -338,8 +337,8 @@ public class Controller {
 		}
 
 		System.out.println("\n" + ConsolePrinterUtil.boxedText(transferType + " Amount") + "\nHow much to do you want to "
-				+ transferType.toLowerCase() + "?\n" + "Your checking account currently has $" + acc.getCheckingAmount()
-				+ "\n" + "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
+				+ transferType.toLowerCase() + "?\n" + ConsolePrinterUtil.CHECKING_LABEL + acc.getCheckingAmount()
+				+ "\n" + ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount() + "\n");
 
 		boolean invalid = true;
 		double amount = 0.0;
@@ -392,8 +391,8 @@ public class Controller {
 		}
 
 		System.out.println("\n" + ConsolePrinterUtil.boxedText("Transferring " + transferType) + "\nHow much to do you want to transfer?\n"
-				+ "Your checking account currently has $" + acc.getCheckingAmount() + "\n"
-				+ "Your savings account currently has $" + acc.getSavingsAmount() + "\n");
+				+ ConsolePrinterUtil.CHECKING_LABEL + acc.getCheckingAmount() + "\n"
+				+ ConsolePrinterUtil.SAVINGS_LABEL + acc.getSavingsAmount() + "\n");
 
 		boolean invalid = true;
 		double amount = 0.0;
@@ -430,7 +429,6 @@ public class Controller {
 
 		// update transaction table
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String formattedTimestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
 		
 		String msg = ConsolePrinterUtil.transactionMsg("Transferred", amount, "from", transferType, acc.getUserId(), newCheckingAmt, newSavingsAmt, timestamp);
 
